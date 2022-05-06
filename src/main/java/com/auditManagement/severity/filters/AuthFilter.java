@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,6 +29,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Autowired private RestTemplate restTemplate;
 
     @Override
+    @CrossOrigin()
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
@@ -35,6 +37,7 @@ public class AuthFilter extends OncePerRequestFilter {
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	    headers.add("Authorization", request.getHeader("Authorization"));
+	    log.info(headers.get("Authorization").toString());
 	    HttpEntity <String> entity = new HttpEntity<>(headers);
 	    try {
 		    restTemplate.exchange(authUri, HttpMethod.GET, entity, ErrorResponse.class);
@@ -54,6 +57,9 @@ public class AuthFilter extends OncePerRequestFilter {
         	String json = mapper.writeValueAsString(error);
         	response.setContentType("application/json");
             response.getWriter().write(json);
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods","POST, GET, OPTIONS, DELETE");
+            response.addHeader("Access-Control-Max-Age", "3600");
     	} catch(Exception e) {
     		log.error(e.getMessage());
 			ErrorResponse error = new ErrorResponse(8006,"Auth server error");
@@ -61,6 +67,10 @@ public class AuthFilter extends OncePerRequestFilter {
 			String json = mapper.writeValueAsString(error);
         	response.setContentType("application/json");
             response.getWriter().write(json);
+            response.getWriter().write(json);
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods","POST, GET, OPTIONS, DELETE");
+            response.addHeader("Access-Control-Max-Age", "3600");
     	}
     }
 }
