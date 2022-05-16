@@ -33,7 +33,7 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-    	String authUri = "http://localhost:7000/api/authjwt";
+    	String authUri = "http://44.200.189.129:7000/api/authjwt";
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 	    headers.add("Authorization", request.getHeader("Authorization"));
